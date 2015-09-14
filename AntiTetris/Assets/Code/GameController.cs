@@ -70,7 +70,7 @@ namespace Assets.Code
         var spawnRotation = Quaternion.identity;
         
         var spawnBlock = Instantiate(Blocks[_nextBlockNumber], spawnPosition, spawnRotation) as GameObject;
-        _nextBlockNumber = Random.Range(0, Blocks.Length - 1);
+        _nextBlockNumber = Random.Range(0, Blocks.Length);
         var blockController = spawnBlock.GetComponent<BlockController>();
 
         blockController.RunOnCollisionEnter.AddListener(SpawnBlock);
