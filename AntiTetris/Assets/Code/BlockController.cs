@@ -16,6 +16,9 @@ namespace Assets.Code
       private Rigidbody _rigidBody;
       private GameController _gameController;
       private Quaternion _turnBlock;
+      private bool _collided;
+      private float _timeToSpawnNext = 0.6f;
+      private float _elapsedTime = 0.0f;
       private void Awake()
       {
         _rigidBody = GetComponent<Rigidbody>();
@@ -30,17 +33,27 @@ namespace Assets.Code
           return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Z))
-          _turnBlock *= Quaternion.Euler(0, 0, -90);
-
-        if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.W))
-        {
+        if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Q))
           _turnBlock *= Quaternion.Euler(0, 0, 90);
+
+        if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.E))
+        {
+          _turnBlock *= Quaternion.Euler(0, 0, -90);
         }
 
         if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
         {
           _rigidBody.velocity = _rigidBody.velocity.WithY(Input.GetAxis("Vertical") * 20);
+        }
+
+        if(_collided)
+        {
+          _elapsedTime += Time.deltaTime;
+          if (_elapsedTime >= _timeToSpawnNext)
+          {
+            playerControlled = false;
+            RunOnCollisionEnter.Invoke();
+          }
         }
       }
 
@@ -76,15 +89,8 @@ namespace Assets.Code
           return;
         }
 
-        //StartCoroutine(Wait());
-        playerControlled = false;
-        RunOnCollisionEnter.Invoke();
-      }
-
-      private IEnumerator Wait()
-      {
-        yield return new WaitForSeconds(0.2f);
-        
+      
+        _collided = true;
       }
     }
 
