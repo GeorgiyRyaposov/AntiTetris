@@ -13,6 +13,7 @@ namespace Assets.Code
       public float FallSpeed;
       public float TurnSpeed;
       public LayerMask blocksCollisionLayer;
+      public bool ShowDebug;
       public GameObject debugHelper;
 
       private bool _gameOver = false;
@@ -42,16 +43,20 @@ namespace Assets.Code
         _restartButton = GameObject.FindGameObjectWithTag("RestartButton");
         _nextBlockLocation = GameObject.FindGameObjectWithTag("NextBlock");
         _restartButton.GetComponent<Button>().onClick.AddListener(() => Application.LoadLevel(Application.loadedLevel));
-        _lineDebugTexts = new List<Text>();
+        
 
         //init debug lines..
-        for (int i = 1; i < _wallLength; i++)
+        if (debugHelper != null && ShowDebug)
         {
-          var newLine = Instantiate(debugHelper, new Vector3(-164, i*37-310, 0), Quaternion.identity) as GameObject;
-          var text = newLine.GetComponent<Text>();
-          text.text = "00";
-          text.gameObject.transform.SetParent(_lineDebugParent.transform, false);
-          _lineDebugTexts.Add(text);
+          _lineDebugTexts = new List<Text>();
+          for (int i = 1; i < _wallLength; i++)
+          {
+            var newLine = Instantiate(debugHelper, new Vector3(-164, i * 37 - 310, 0), Quaternion.identity) as GameObject;
+            var text = newLine.GetComponent<Text>();
+            text.text = "00";
+            text.gameObject.transform.SetParent(_lineDebugParent.transform, false);
+            _lineDebugTexts.Add(text);
+          }
         }
 
         _nextBlockNumber = Random.Range(0, Blocks.Length - 1);
@@ -112,7 +117,7 @@ namespace Assets.Code
           var ray = new Ray(checkLineVector, _directionVector);
           var hits = Physics.RaycastAll(ray, 25f, blocksCollisionLayer);
 
-          _lineDebugTexts[i-1].text = hits.Count().ToString("00");
+          if(_lineDebugTexts!= null) _lineDebugTexts[i-1].text = hits.Count().ToString("00");
 
           if (hits.Count() >= 11 && !ContainsBlockControlledByPlayer(hits))
           {
