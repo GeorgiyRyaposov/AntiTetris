@@ -1,0 +1,12 @@
+[Ll]ibrary/
+[Tt]emp/
+[Bb]uild/
+[Oo]bj/
+[Aa]ssets/UnityVS*
+[Aa]ssembly-*
+*.dll
+*.dll.meta
+*.sln
+*.suo
+*.userprefs
+*.csproj
